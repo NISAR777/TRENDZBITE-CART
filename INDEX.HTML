@@ -1,101 +1,137 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TrendzBite Order Cart</title>
 <style>
-:root{--brand:#b91c1c;--dark:#171717;--muted:#666;--line:#e5e5e5;--bg:#fff8f2}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--dark)}
-header{background:var(--brand);color:white;padding:24px 16px;text-align:center}header h1{margin:0;font-size:30px}header p{margin:8px 0 0}
-main{max-width:1000px;margin:22px auto;padding:0 14px;display:grid;grid-template-columns:1.25fr .9fr;gap:18px}
-section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 8px #00000008}
-h2{margin:0 0 14px;font-size:21px}.menu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.menu-item:last-child{border-bottom:0}
-.foodname{font-weight:700}.price{color:var(--muted);font-size:14px;margin-top:5px}.controls{display:flex;align-items:center;gap:10px;white-space:nowrap}
-button{border:0;border-radius:8px;padding:10px 13px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}button:focus,input:focus,textarea:focus{outline:2px solid #f59e0b;outline-offset:2px}.controls button{width:38px;padding:9px 0;font-size:18px}.controls span{min-width:16px;text-align:center;font-weight:700}
-.field{margin:10px 0}.field label{display:block;font-size:14px;font-weight:700;margin-bottom:5px}.field input,.field textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:8px;font:inherit}.field textarea{min-height:76px;resize:vertical}
-.line{display:flex;justify-content:space-between;gap:12px;margin:10px 0}.total{border-top:1px solid var(--line);padding-top:12px;font-size:19px;font-weight:800}.muted{color:var(--muted);font-size:13px;line-height:1.45}.submit{width:100%;margin-top:12px;padding:14px;font-size:16px}.empty{color:var(--muted);padding:10px 0}.status{margin-top:10px;font-size:13px;color:#166534;line-height:1.4}
-@media(max-width:700px){main{grid-template-columns:1fr}header h1{font-size:26px}}
+body{font-family:Arial;margin:0;background:#f4f7f2;color:#222}
+header{background:#146b45;color:white;padding:22px;text-align:center}
+main{max-width:900px;margin:auto;padding:15px}
+section{background:white;padding:16px;margin:15px 0;border-radius:12px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.item{border:1px solid #ddd;padding:12px;border-radius:10px}
+.price{color:#146b45;font-weight:bold}
+button{cursor:pointer;border:0;border-radius:7px;padding:9px 13px;background:#146b45;color:white;font-size:16px}
+.qty button{padding:5px 12px}
+input,textarea{width:100%;box-sizing:border-box;padding:11px;margin:5px 0 12px;border:1px solid #bbb;border-radius:7px;font:inherit}
+label{font-weight:bold}
+.total{font-size:20px;font-weight:bold;color:#146b45}
+#qr{width:210px;max-width:100%;display:block;margin:12px auto}
 </style>
 </head>
 <body>
-<header><h1>TrendzBite</h1><p>Fresh Food • Easy Ordering</p></header>
+<header>
+<h1>🍽️ TrendzBite</h1>
+<p>Fresh Food • Home Delivery</p>
+<p>Delivery Charge: ₹30</p>
+</header>
+
 <main>
 <section>
 <h2>Our Menu</h2>
-<div id="menu"></div>
-<p class="muted">Menu prices can be changed in the HTML file before publishing.</p>
+<div class="menu" id="menu"></div>
 </section>
+
 <section>
-<h2>Your Cart</h2>
-<div id="cart-items"><p class="empty">Your cart is empty. Tap + beside an item to add it.</p></div>
-<div class="line"><span>Food total</span><strong id="subtotal">₹0</strong></div>
-<div class="line"><span>Delivery charge</span><strong id="delivery">₹0</strong></div>
-<div class="line total"><span>Grand total</span><strong id="grand">₹0</strong></div>
-<h2 style="margin-top:22px">Delivery Details</h2>
-<form id="order-form">
-<div class="field"><label for="customer">Customer name *</label><input id="customer" required autocomplete="name"></div>
-<div class="field"><label for="phone">Mobile number *</label><input id="phone" required inputmode="tel" autocomplete="tel" pattern="[0-9 +()-]{10,16}" placeholder="10-digit mobile number"></div>
-<div class="field"><label for="address">Full delivery address *</label><textarea id="address" required autocomplete="street-address"></textarea></div>
-<div class="field"><label for="payment">Payment method</label><select id="payment" style="width:100%;padding:11px;border:1px solid #ccc;border-radius:8px;font:inherit"><option>Cash on Delivery</option><option>UPI (pay separately)</option></select></div>
-<button class="submit" type="submit">Place Order on WhatsApp</button>
+<h2>🛒 Your Cart</h2>
+<div id="cart">Your cart is empty.</div>
+<p>Subtotal: ₹<span id="subtotal">0</span></p>
+<p>Delivery: ₹<span id="delivery">0</span></p>
+<p class="total">Grand Total: ₹<span id="total">0</span></p>
+</section>
+
+<section>
+<h2>Delivery Details</h2>
+<form id="orderForm">
+<label>Customer Name *</label>
+<input id="customer" required placeholder="Enter your name">
+
+<label>Mobile Number *</label>
+<input id="phone" type="tel" required placeholder="Mobile number">
+
+<label>Delivery Address *</label>
+<textarea id="address" required placeholder="Full address and landmark"></textarea>
+
+<label>Payment Method</label>
+<p><label><input style="width:auto" type="radio" name="payment" value="UPI QR" checked> UPI QR</label></p>
+<p><label><input style="width:auto" type="radio" name="payment" value="Cash on Delivery"> Cash on Delivery</label></p>
+
+<div id="qrArea">
+<h3>Scan to Pay TrendzBite</h3>
+<img id="qr" src="./qr.png" alt="TrendzBite UPI QR Code">
+<p>UPI ID: 7889777704@ybl</p>
+<p>Payment verify hone ke baad hi order paid confirm karein.</p>
+</div>
+
+<button type="submit">Send Order on WhatsApp</button>
 </form>
-<p class="muted">WhatsApp will open with your order details. Review the message and tap Send. UPI selection does not collect payment automatically.</p>
-<div id="status" class="status" aria-live="polite"></div>
 </section>
 </main>
+
 <script>
-/* SETUP: replace 91XXXXXXXXXX below with your WhatsApp number including country code, digits only.
-   Example India: 919876543210. Do not include + or spaces. */
-const WHATSAPP_NUMBER = "91XXXXXXXXXX";
-const DELIVERY_CHARGE = 30;
-const products = [
-  {id:"momos-steamed",name:"Momos — Steamed (1 plate)",price:100},
-  {id:"momos-fried",name:"Momos — Fried (1 plate)",price:100},
-  {id:"chicken-500",name:"Fried Chicken Boneless (500 g)",price:250},
-  {id:"chicken-1kg",name:"Fried Chicken Boneless (1 kg)",price:500},
-  {id:"fish-500",name:"Crispy Fried Fish (500 g)",price:250},
-  {id:"fish-1kg",name:"Crispy Fried Fish (1 kg)",price:500},
-  {id:"seekh-chicken",name:"Chicken Seekh — Regular",price:50},
-  {id:"seekh-fish",name:"Fish Seekh — Regular",price:50},
-  {id:"seekh-chicken-large",name:"Chicken Seekh — Large",price:100},
-  {id:"seekh-fish-large",name:"Fish Seekh — Large",price:100},
-  {id:"kheer",name:"Irani Kheer (1 box)",price:20}
+const items=[
+["Steamed Momos (1 plate)",100,"🥟"],
+["Fried Momos (1 plate)",100,"🥟"],
+["Fried Chicken Boneless (1 kg)",500,"🍗"],
+["Fried Chicken Boneless (1/2 kg)",250,"🍗"],
+["Crispy Fried Fish (1 kg)",500,"🐟"],
+["Crispy Fried Fish (1/2 kg)",250,"🐟"],
+["Roasted Chicken Seekh",50,"🍢"],
+["Roasted Fish Seekh",50,"🍢"],
+["Large Roasted Chicken Seekh",100,"🍢"],
+["Large Roasted Fish Seekh",100,"🍢"],
+["Irani Kheer",20,"🍮"]
 ];
-const quantities = {};
-const inr = n => "₹" + n.toLocaleString("en-IN");
-const menu = document.getElementById("menu");
-menu.innerHTML = products.map(p => `<div class="menu-item"><div><div class="foodname">${p.name}</div><div class="price">${inr(p.price)}</div></div><div class="controls"><button type="button" aria-label="Decrease ${p.name}" onclick="changeQty('${p.id}',-1)">−</button><span id="qty-${p.id}">0</span><button type="button" aria-label="Increase ${p.name}" onclick="changeQty('${p.id}',1)">+</button></div></div>`).join("");
-function changeQty(id, delta){quantities[id]=Math.max(0,(quantities[id]||0)+delta);document.getElementById("qty-"+id).textContent=quantities[id];renderCart();}
-function renderCart(){
- const chosen=products.filter(p=>(quantities[p.id]||0)>0);
- const subtotal=chosen.reduce((s,p)=>s+p.price*quantities[p.id],0);
- document.getElementById("cart-items").innerHTML=chosen.length?chosen.map(p=>`<div class="line"><span>${p.name} × ${quantities[p.id]}</span><strong>${inr(p.price*quantities[p.id])}</strong></div>`).join(""):'<p class="empty">Your cart is empty. Tap + beside an item to add it.</p>';
- document.getElementById("subtotal").textContent=inr(subtotal);
- document.getElementById("delivery").textContent=inr(subtotal?DELIVERY_CHARGE:0);
- document.getElementById("grand").textContent=inr(subtotal?subtotal+DELIVERY_CHARGE:0);
+let quantities=items.map(()=>0);
+const rupees=n=>"₹"+n;
+function drawMenu(){
+ document.getElementById("menu").innerHTML=items.map((p,i)=>`
+ <div class="item">
+ <h3>${p[2]} ${p[0]}</h3>
+ <p class="price">₹${p[1]}</p>
+ <div class="qty">
+ <button type="button" onclick="change(${i},-1)">−</button>
+ <strong id="q${i}">${quantities[i]}</strong>
+ <button type="button" onclick="change(${i},1)">+</button>
+ </div></div>`).join("");
 }
-document.getElementById("order-form").addEventListener("submit",e=>{
- e.preventDefault();
- const chosen=products.filter(p=>(quantities[p.id]||0)>0);
- if(!chosen.length){alert("Please add at least one item to your cart.");return;}
- if(WHATSAPP_NUMBER.includes("X")){alert("The cart is ready, but the WhatsApp number must be added in the HTML first. Replace 91XXXXXXXXXX with your business WhatsApp number.");return;}
- const name=document.getElementById("customer").value.trim();
- const phone=document.getElementById("phone").value.trim();
- const address=document.getElementById("address").value.trim();
- const payment=document.getElementById("payment").value;
- const subtotal=chosen.reduce((s,p)=>s+p.price*quantities[p.id],0);
- const lines=chosen.map(p=>`• ${p.name} x ${quantities[p.id]} = ${inr(p.price*quantities[p.id])}`);
- const msg=`*New TrendzBite Order*%0A${encodeURIComponent("")}`; // replaced below
- const textMsg=[
- "NEW TRENDZBITE ORDER","",
- ...chosen.map(p=>`${p.name} x ${quantities[p.id]} = ${inr(p.price*quantities[p.id])}`),
- "",`Food total: ${inr(subtotal)}`,`Delivery: ${inr(DELIVERY_CHARGE)}`,`GRAND TOTAL: ${inr(subtotal+DELIVERY_CHARGE)}`,"",
- `Customer: ${name}`,`Mobile: ${phone}`,`Address: ${address}`,`Payment: ${payment}`
- ].join("\n");
- document.getElementById("status").textContent="WhatsApp is opening. Check the order details and tap Send to submit.";
- window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(textMsg)}`,"_blank","noopener");
+function change(i,n){
+ quantities[i]=Math.max(0,quantities[i]+n);
+ document.getElementById("q"+i).textContent=quantities[i];
+ drawCart();
+}
+function drawCart(){
+ let sub=0,lines=[];
+ items.forEach((p,i)=>{
+ if(quantities[i]>0){
+ let amount=p[1]*quantities[i];sub+=amount;
+ lines.push(`${p[0]} x ${quantities[i]} = ₹${amount}`);
+ }
+ });
+ document.getElementById("cart").innerHTML=lines.length?lines.join("<br>"):"Your cart is empty.";
+ document.getElementById("subtotal").textContent=sub;
+ document.getElementById("delivery").textContent=sub?30:0;
+ document.getElementById("total").textContent=sub?sub+30:0;
+}
+document.querySelectorAll('input[name="payment"]').forEach(el=>{
+ el.addEventListener("change",()=>{
+ document.getElementById("qrArea").style.display=
+ document.querySelector('input[name="payment"]:checked').value==="UPI QR"?"block":"none";
+ });
 });
+document.getElementById("orderForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ let chosen=items.filter((p,i)=>quantities[i]>0);
+ if(!chosen.length){alert("Please select food items first.");return;}
+ let sub=items.reduce((s,p,i)=>s+p[1]*quantities[i],0);
+ let payment=document.querySelector('input[name="payment"]:checked').value;
+ let order=items.map((p,i)=>quantities[i]>0?`${p[0]} x ${quantities[i]} = ₹${p[1]*quantities[i]}`:"").filter(Boolean).join("\n");
+ let message=`TRENDZBITE ORDER\nName: ${document.getElementById("customer").value}\nMobile: ${document.getElementById("phone").value}\nAddress: ${document.getElementById("address").value}\n\n${order}\n\nSubtotal: ₹${sub}\nDelivery: ₹${sub?30:0}\nTotal: ₹${sub?sub+30:0}\nPayment: ${payment}\nUPI ID: 7889777704@ybl`;
+ window.open("https://wa.me/917889777704?text="+encodeURIComponent(message),"_blank");
+});
+drawMenu();drawCart();
 </script>
 </body>
 </html>
